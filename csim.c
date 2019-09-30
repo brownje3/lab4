@@ -15,29 +15,36 @@
 int main()
 {
     struct cache_t cache;
+	
+	char line[80];
+	
+	fgets(line, 80, stdin);
+	//sscanf(line, "%x %lu", &cache);
     
 	for(int i = 0; i < cache.sets; i++)
 	{
-		cache.tag[][i] = malloc(sizeof(unsigned long) * cache.sets);
+		for(int j = 0; j < cache.associativity; j++)
+		{
+			cache.tag[i][j] = (unsigned long int) malloc(sizeof(unsigned long int) * cache.sets);
+		}
 	}
 	
-	getLines();
 	
-    printSummary(0, 0, 0);
+    //printSummary(hit_count, miss_count, eviction_count);
     return 0;
 }
 
 int getBits(int first, int second, unsigned long source) 
 {
-    if(first < 0) //checks for an out of bounds error with the first parameter
+    if(first < 0 || first > second) //checks for an out of bounds error with the first parameter
     {
-        printf("%s", "First bit out of bounds, please check getBits");
-        return 0;
+        printf("Error in first bit of getBits, doesn't meet bounds");
+        exit(EXIT_FAILURE);
     }
-    if(second > 63) //checks for an out of bounds error with the second parameter
+    else if(second > 63 || second < first) //checks for an out of bounds error with the second parameter
     {
-        printf("%s", "Second bit out of bounds, please check getBits");
-        return 0;
+        printf("Second bit out of bounds, please check getBits");
+        exit(EXIT_FAILURE);
     }
     
     int firstShift = 63 - second;
@@ -49,10 +56,3 @@ int getBits(int first, int second, unsigned long source)
     return source;
 }
 
-void getLines()
-{
-	char line[80];
-	
-	fgets(line, 80, stdin);
-	//sscanf(line, "% ", 
-}

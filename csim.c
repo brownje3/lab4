@@ -12,20 +12,22 @@
  *  
  */
 
-int main()
+int main(int argc, char * argv[])
 {
     struct cache_t cache;
 	
 	char line[80];
-    char * filename;
+    char * filename = "";
     int hit_count, miss_count, eviction_count;
 
     hit_count = 0;
     miss_count = 0;
     eviction_count = 0;
+
+    cline(argc, argv, filename);
 	
 	fgets(line, 80, stdin);
-	//sscanf(line, "%x %lu", &cache);
+    //sscanf(line, "%x %lu", &cache);
     
 	for(int i = 0; i < cache.sets; i++)
 	{
@@ -38,6 +40,11 @@ int main()
 	
     printSummary(hit_count, miss_count, eviction_count);
     return 0;
+}
+
+void cline(int argc, char * argv[], char * fn)
+{
+   if (ar) 
 }
 
 int getBits(int first, int second, unsigned long source) 

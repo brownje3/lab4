@@ -9,6 +9,6 @@
     };
 
      
-    int main();
+    int main(int argc, char * argv[]);
     int getBits(int first, int second, unsigned long source);
-    void cline();    
+    void cline(int argc, char * argv[], char * fn);    

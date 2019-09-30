@@ -44,7 +44,15 @@ int main(int argc, char * argv[])
 
 void cline(int argc, char * argv[], char * fn)
 {
-   if (ar) 
+   if (argc != 4 || argc != 5) {
+        printf("%s", argv[0]);
+        printf("check\n");
+        exit(1);
+   }
+
+   
+
+   exit(1);
 }
 
 int getBits(int first, int second, unsigned long source) 

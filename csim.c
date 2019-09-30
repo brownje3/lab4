@@ -1,18 +1,27 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "cachelab.h"
 #include "csim.h"
 
 
+/**
+ *  
+ *  James Brown, Connor Hamilton
+ *
+ *  brownje3, hamiltonc
+ *  
+ */
 
 int main()
 {
     struct cache_t cache;
     
-	for(int i = 0; i < setsByAssoc; i++)
+	for(int i = 0; i < cache.sets; i++)
 	{
-		cache.tag[][i] = (unsigned long int) malloc(sizeof(unsigned long int) * setsByAssoc);
+		cache.tag[][i] = malloc(sizeof(unsigned long) * cache.sets);
 	}
 	
-	getLines()
+	getLines();
 	
     printSummary(0, 0, 0);
     return 0;
@@ -22,13 +31,13 @@ int getBits(int first, int second, unsigned long source)
 {
     if(first < 0) //checks for an out of bounds error with the first parameter
     {
-        std::cout << "First bit out of bounds, please check getBits";
-        return;
+        printf("%s", "First bit out of bounds, please check getBits");
+        return 0;
     }
     if(second > 63) //checks for an out of bounds error with the second parameter
     {
-        std::cout << "Second bit out of bounds, please check getBits";
-        return;
+        printf("%s", "Second bit out of bounds, please check getBits");
+        return 0;
     }
     
     int firstShift = 63 - second;
@@ -42,8 +51,8 @@ int getBits(int first, int second, unsigned long source)
 
 void getLines()
 {
-	char[80] line;
+	char line[80];
 	
 	fgets(line, 80, stdin);
-	sscanf(line, "% ", 
+	//sscanf(line, "% ", 
 }

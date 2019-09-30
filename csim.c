@@ -17,6 +17,12 @@ int main()
     struct cache_t cache;
 	
 	char line[80];
+    char * filename;
+    int hit_count, miss_count, eviction_count;
+
+    hit_count = 0;
+    miss_count = 0;
+    eviction_count = 0;
 	
 	fgets(line, 80, stdin);
 	//sscanf(line, "%x %lu", &cache);
@@ -30,7 +36,7 @@ int main()
 	}
 	
 	
-    //printSummary(hit_count, miss_count, eviction_count);
+    printSummary(hit_count, miss_count, eviction_count);
     return 0;
 }
 

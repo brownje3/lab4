@@ -11,4 +11,4 @@
      
     int main();
     int getBits(int first, int second, unsigned long source);
-        
+    void cline();    

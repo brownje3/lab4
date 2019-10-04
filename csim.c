@@ -16,8 +16,9 @@ int main(int argc, char * argv[])
 {
     struct cache_t cache;
 	
-	char line[80];
-    char * filename = "";
+    char line[80];
+    char address[15];
+    char * filename = ""; //added an address to be read
     int hit_count, miss_count, eviction_count;
 
     hit_count = 0;
@@ -26,8 +27,9 @@ int main(int argc, char * argv[])
 
     cline(argc, argv, filename);
 	
+	
 	fgets(line, 80, stdin);
-    //sscanf(line, "%x %lu", &cache);
+    //sscanf(line, "%x %lu", &address, &cache, );
     
 	for(int i = 0; i < cache.sets; i++)
 	{
@@ -37,6 +39,16 @@ int main(int argc, char * argv[])
 		}
 	}
 	
+	
+    //checks the first char of the line for 'I'
+    if(line[0] == 'I')
+    {
+	break;    
+    }
+    else //if the first character isn't 'I'
+    {
+	    
+    }
 	
     printSummary(hit_count, miss_count, eviction_count);
     return 0;
@@ -76,4 +88,14 @@ int getBits(int first, int second, unsigned long source)
     
     return source;
 }
-
+//gets the number of bits for block size
+int log2(int base)
+{
+	int bits = 0;
+	while(base)
+	{
+	   logValue++;
+	   base = base >> 1;
+	}
+	return bits;
+}

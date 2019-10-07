@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
 #include "cachelab.h"
 #include "csim.h"
 
@@ -14,37 +16,34 @@
 
 int main(int argc, char * argv[])
 {
-    struct cache_t cache;
-	
+    struct cache_t cache;	
+    //bool verbose = false;
     char line[80];
-    char address[15];
-    char * filename = ""; //added an address to be read
+    //char address[15];
+    char filename[80]; //added an address to be read
     int hit_count, miss_count, eviction_count;
 
     hit_count = 0;
     miss_count = 0;
     eviction_count = 0;
 
-    cline(argc, argv, filename);
+    cline(argc, argv, filename, &cache);
 	
 	
 	fgets(line, 80, stdin);
     //sscanf(line, "%x %lu", &address, &cache, );
     
-	for(int i = 0; i < cache.sets; i++)
+	/**for(int i = 0; i < cache.sets; i++)
 	{
 		for(int j = 0; j < cache.associativity; j++)
 		{
 			cache.tag[i][j] = (unsigned long int) malloc(sizeof(unsigned long int) * cache.sets);
 		}
-	}
+	}*/
 	
 	
     //checks the first char of the line for 'I'
-    if(line[0] == 'I')
-    {
-	break;    
-    }
+    if(line[0] == 'I'){}
     else //if the first character isn't 'I'
     {
 	    
@@ -54,15 +53,33 @@ int main(int argc, char * argv[])
     return 0;
 }
 
-void cline(int argc, char * argv[], char * fn)
+void cline(int argc, char * argv[], char * fn, struct cache_t * cache)
 {
-   if (argc != 4 || argc != 5) {
-        printf("%s", argv[0]);
-        printf("check\n");
-        exit(1);
+   int cap = 0;
+
+   for(int i = 1; i < argc; i++) {
+        if (strncmp(argv[i], "-v", 2) == 0){
+            cap++;
+        }
+        else if (strncmp(argv[i], "-h", 2) == 0) {
+            printHelp();    
+        }
+        else if (strncmp(argv[i], "-s", 2) == 0) {
+            cap++;
+        }
+        else if (strncmp(argv[i], "-E", 2) == 0) {
+            cap++;
+        }
+        else if (strncmp(argv[i], "-b", 2) == 0) {
+            cap++;
+        }
+        else if (strncmp(argv[i], "-t", 2) == 0) {
+            cap++;
+        }
+
+        if (cap < 4) {printHelp();}
    }
 
-   
 
    exit(1);
 }
@@ -88,14 +105,23 @@ int getBits(int first, int second, unsigned long source)
     
     return source;
 }
-//gets the number of bits for block size
-int log2(int base)
-{
-	int bits = 0;
-	while(base)
-	{
-	   logValue++;
-	   base = base >> 1;
-	}
-	return bits;
+
+void printHelp(){
+        
+    printf("csim: Missing required command line argument \
+        Usage: ./csim [-hv -s <num> -E <num> -b <num> -t <file> \
+        Options \
+          -h         Print this help message. \
+          -v         Optional verbose flag. \
+          -s <num>   Number of set index bits.\
+          -E <num>   Number of lines per set.\
+          -b <num>   Number of block offset bits.\
+          -t <file>  Trace file.\
+\
+        Examples:\
+        linux>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace\
+        linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace");
+
+    exit(1);
 }
+

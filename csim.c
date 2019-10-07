@@ -17,20 +17,23 @@
 int main(int argc, char * argv[])
 {
     struct cache_t cache;	
-    //bool verbose = false;
+    bool verbose = false;
     char line[80];
     //char address[15];
     char filename[80]; //added an address to be read
     int hit_count, miss_count, eviction_count;
+    FILE *trace;
 
     hit_count = 0;
     miss_count = 0;
     eviction_count = 0;
 
-    cline(argc, argv, filename, &cache);
-	
-	
-	fgets(line, 80, stdin);
+    verbose = cline(argc, argv, filename, &cache);
+    
+    trace = fopen(filename, "r");
+      	
+	if (verbose) {exit(0);}
+	fgets(line, 80, trace);
     //sscanf(line, "%x %lu", &address, &cache, );
     
 	/**for(int i = 0; i < cache.sets; i++)
@@ -42,46 +45,53 @@ int main(int argc, char * argv[])
 	}*/
 	
 	
-    //checks the first char of the line for 'I'
-    if(line[0] == 'I'){}
-    else //if the first character isn't 'I'
-    {
-	    
-    }
-	
     printSummary(hit_count, miss_count, eviction_count);
     return 0;
 }
 
-void cline(int argc, char * argv[], char * fn, struct cache_t * cache)
+bool cline(int argc, char * argv[], char * fn, struct cache_t * cache)
 {
    int cap = 0;
+   bool ret = false;
 
    for(int i = 1; i < argc; i++) {
         if (strncmp(argv[i], "-v", 2) == 0){
             cap++;
+            ret = true;
         }
         else if (strncmp(argv[i], "-h", 2) == 0) {
-            printHelp();    
+            printHelp(); 
         }
         else if (strncmp(argv[i], "-s", 2) == 0) {
             cap++;
+            cache->sets = atoi(argv[i+1]) << 2;
+            cache->setIndexBits = atoi(argv[i+1]);
         }
         else if (strncmp(argv[i], "-E", 2) == 0) {
+            cache->associativity = atoi(argv[i+1]);
             cap++;
         }
         else if (strncmp(argv[i], "-b", 2) == 0) {
+            cache->blockBits = atoi(argv[i+1]);
+            cache->blockSize = atoi(argv[i+1]) << 2;
             cap++;
         }
         else if (strncmp(argv[i], "-t", 2) == 0) {
+            fn = argv[i+1];
             cap++;
         }
+    
+    }
 
-        if (cap < 4) {printHelp();}
+   cache->tag = (long unsigned int **)malloc(cache->associativity * sizeof(unsigned long int));
+   
+   for(int i = 0; i < cache->associativity; i++) {
+        cache->tag[i] = (long unsigned int *)malloc(cache->sets * sizeof(unsigned long int));
    }
 
+   if (cap < 4) {printHelp();}
 
-   exit(1);
+   return ret;
 }
 
 int getBits(int first, int second, unsigned long source) 
@@ -108,19 +118,14 @@ int getBits(int first, int second, unsigned long source)
 
 void printHelp(){
         
-    printf("csim: Missing required command line argument \
-        Usage: ./csim [-hv -s <num> -E <num> -b <num> -t <file> \
-        Options \
-          -h         Print this help message. \
-          -v         Optional verbose flag. \
-          -s <num>   Number of set index bits.\
-          -E <num>   Number of lines per set.\
-          -b <num>   Number of block offset bits.\
-          -t <file>  Trace file.\
-\
-        Examples:\
-        linux>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace\
-        linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace");
+    printf("csim: Missing required command line argument\n");
+    printf("Usage: ./csim [-h] [-v] -s <num> -E <num> -b <num> -t <file>\n");
+    printf("Options:\n          -h         Print this help message.\n");
+    printf("          -v         Optional verbose flag.\n          -s <num>   Number of set index bits.\n");
+    printf("          -E <num>   Number of lines per set.\n          -b <num>   Number of block offset bits.\n");
+    printf("          -t <file>  Trace file.\nExamples:\n");
+    printf("        linux>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace\n");
+    printf("        linux>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace");
 
     exit(1);
 }

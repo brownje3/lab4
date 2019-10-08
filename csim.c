@@ -33,16 +33,9 @@ int main(int argc, char * argv[])
     trace = fopen(filename, "r");
       	
 	if (verbose) {exit(0);}
-	fgets(line, 80, trace);
+	//fgets(line, 80, trace);
     //sscanf(line, "%x %lu", &address, &cache, );
     
-	/**for(int i = 0; i < cache.sets; i++)
-	{
-		for(int j = 0; j < cache.associativity; j++)
-		{
-			cache.tag[i][j] = (unsigned long int) malloc(sizeof(unsigned long int) * cache.sets);
-		}
-	}*/
 	
 	
     printSummary(hit_count, miss_count, eviction_count);

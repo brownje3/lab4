@@ -14,6 +14,9 @@
  *  
  */
 
+
+int digitNum(unsigned long number);
+
 int main(int argc, char * argv[])
 {
     struct cache_t cache;	
@@ -46,9 +49,9 @@ int main(int argc, char * argv[])
 	if (verbose) {exit(0);}
     
     // allocates memory for tags
-    *tags = (unsigned long int*)malloc(sets * associativity * sizeof(unsigned long int));
+    *tags = (unsigned long int*)malloc(cache.sets * cache.associativity * sizeof(unsigned long int));
     
-    int addressLength = 0;
+    
 
     while(fgets(line, 80, trace) != NULL)
     {
@@ -224,6 +227,6 @@ void printHelp(){
 //checks the number of digits in a long
 int digitNum(unsigned long number)
 {
-        std::string testString;
-        return strlen(sprintf(testString, "%lu", number);
+        char testString[20];
+        return strlen(sprintf(testString, "%lu", number));
 }

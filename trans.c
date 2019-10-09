@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include "cachelab.h"
 
+bool checkBounds(int start, int size, int steps);
+
 int is_transpose(int M, int N, int A[N][M], int B[M][N]);
 
 /* 
@@ -22,6 +24,80 @@ int is_transpose(int M, int N, int A[N][M], int B[M][N]);
 char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[N][M], int B[M][N])
 {
+    int temp;//temporary variable
+    int dc;//variable found on diagonal of matrix; short for don't change
+    int iter;//iterators for row and column, basically the dimensions of the block; chance they may change for the third case, same for the first 2
+
+    if(M == N)//sees if the dimensions will be a perfect square
+    {
+        if(M == 32)//checks the sizes to set the appropriate iterator
+        {
+            iter = 8;
+        }
+        else
+        {
+            iter = 16;
+        }
+
+        for(int i = 0; i < M; i = i += iter)//row for loop
+        {
+            for(int j = 0; j < M; j += iter)//col for loop
+             {
+                for(int k = i; k < i += iter; k++)//block length
+                {
+                    for(int p = j; p < j += iter; p++)//block width
+                    {
+                        if(k == p)//checks to see if the element is on the diagonal; places A[k][k] into temp for later and dc as a reference for when i and j are the same
+                        {
+                            temp = A[k][k];
+                            dc = k;
+                        }
+                        else //element is not on diagonal
+                        {
+                            B[p][k] = A[k][p];
+                        }
+                    }
+                    if(i == j)//sets the diagonal from temp
+                    {
+                        B[dc][dc] = temp;
+                    }
+                }
+             }
+        }
+    }
+    else
+    {
+        iter = 8;//arbitrary number, may change later
+        for(int i = 0; i < M; i += iterRow)//row for loop
+        {
+            for(int j = 0; j < N; j += iterCol)//col for loop
+            {
+                 int k = i;//sets k
+                 int p = j;//sets p
+                 while(checkBounds(k, N, iterRow))//checks if k is within bounds of the block and array
+                 {
+                     while(checkBounds(p, M, iterCol))//checks if p is within bounds of the block and array
+                     {
+                         if(k == p)//functions the same as earlier, checks for the diagonal
+                         {
+                             temp = A[k][k];
+                             dc = k;
+                         }
+                         else
+                         {
+                             B[p][k] = A[k][p];
+                         }
+                         p++;
+                     }
+                     k++;
+                 }
+                 if(i == j)
+                 {
+                     B[dc][dc] = temp;
+                 }
+              }
+          }
+    }
 }
 
 /* 
@@ -82,3 +158,11 @@ int is_transpose(int M, int N, int A[N][M], int B[M][N])
     return 1;
 }
 
+bool checkBounds(int start, int size, int steps)
+{
+    if(start > size || start > (size + steps))
+    {
+        return false;
+    }
+    return true;
+}

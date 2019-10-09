@@ -19,10 +19,15 @@ int main(int argc, char * argv[])
     struct cache_t cache;	
     bool verbose = false;
     char line[80];
-    //char address[15];
+    char instruction;
+    int size;
+    unsigned long address;
     char filename[80]; //added an address to be read
     int hit_count, miss_count, eviction_count;
+    bool hit, miss, evic;//keeps track as to whether a hit, miss, or eviction is needed
     FILE *trace;
+    
+
 
     hit_count = 0;
     miss_count = 0;
@@ -31,12 +36,106 @@ int main(int argc, char * argv[])
     verbose = cline(argc, argv, filename, &cache);
     
     trace = fopen(filename, "r");
+    //checks to see if the file has been found
+    if(trace == NULL)
+    {
+        printf("No file found");
+        exit(0);
+    }
       	
 	if (verbose) {exit(0);}
-	//fgets(line, 80, trace);
-    //sscanf(line, "%x %lu", &address, &cache, );
     
-	
+    // allocates memory for tags
+    *tags = (unsigned long int*)malloc(sets * associativity * sizeof(unsigned long int));
+    
+    int addressLength = 0;
+
+    while(fgets(line, 80, trace) != NULL)
+    {
+        sscanf(line, "%c %lu %d", &instruction, &address, &size);
+        
+        //checks for errors in the instruction
+        if(instruction != 'I' || instruction != 'M' 
+            || instruction != 'L' || instruction != 'S')
+        {
+            printf("Error in instruction");
+            exit(0);
+        }
+        else if(digitNum(address) != 8)//checks if address is long enough
+        {
+            printf("Error in address");
+            exit(0);
+        }
+        //sets the boolean values as 0 at the beginning of each loop
+        hit = miss = evic = 0;
+
+
+        //need to find a way to set the boolean values
+
+
+        //switch that handles the various counts
+        switch(instruction)
+        {
+            case 'M':
+                    if(hit)
+                    {
+                        hit_count = hit_count + 2;
+                        if(verbose)
+                        {
+                            printf("hit hit \n");
+                        }
+                    }
+                    else if(miss)
+                    {
+                        hit_count++;
+                        miss_count++;
+                        if(verbose)
+                        {
+                            printf("miss hit \n");
+                        }
+                    }
+                    else
+                    {
+                        miss_count++;
+                        eviction_count++;
+                        hit_count++;
+                        if(verbose)
+                        {
+                            printf("miss eviction hit \n");
+                        }
+                    }
+                    break;
+            case 'L':
+            case 'S':
+                    if(hit)
+                    {
+                        hit_count++;;
+                        if(verbose)
+                        {
+                            printf("hit \n");
+                        }
+                    }
+                    else if(miss)
+                    {
+                        miss_count++;
+                        if(verbose)
+                        {
+                            printf("miss \n");
+                        }
+                    }
+                    else
+                    {
+                        miss_count++;
+                        eviction_count++;
+                        if(verbose)
+                        {
+                            printf("miss eviction \n");
+                        }
+                    }
+                    break;
+        }
+
+    }
 	
     printSummary(hit_count, miss_count, eviction_count);
     return 0;
@@ -122,4 +221,9 @@ void printHelp(){
 
     exit(1);
 }
-
+//checks the number of digits in a long
+int digitNum(unsigned long number)
+{
+        std::string testString;
+        return strlen(sprintf(testString, "%lu", number);
+}

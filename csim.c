@@ -16,6 +16,7 @@
 
 
 int digitNum(unsigned long number);
+void vprint(char inst, int hme);
 
 int main(int argc, char * argv[])
 {
@@ -80,45 +81,45 @@ int main(int argc, char * argv[])
         //still need to update the booleans for the switch
 
         //switch that handles the various counts
-        switch(instruction)
+        if(instruction == 'M')
         {
-            case 'M':
-                    if(hit)
-                    {
-                        hit_count = hit_count + 2;
-                        if(verbose)
-                        {
-                            printf("hit hit \n");
-                        }
-                    }
-                    else if(miss)
-                    {
-                        hit_count++;
-                        miss_count++;
-                        if(verbose)
-                        {
-                            printf("miss hit \n");
-                        }
-                    }
-                    else
-                    {
-                        miss_count++;
-                        eviction_count++;
-                        hit_count++;
-                        if(verbose)
-                        {
-                            printf("miss eviction hit \n");
-                        }
-                    }
-                    break;
-            case 'L':
-            case 'S':
-                    if(hit)
+           if(hit)
+           {
+               hit_count = hit_count + 2;
+               if(verbose)
+               {
+                   vprint(instruction, 1);
+               }
+            }
+            else if(miss)
+            {
+                hit_count++;
+                miss_count++;
+                if(verbose)
+                {
+                      vprint(instruction, 2);
+                }
+             }
+             else
+             {
+                miss_count++;
+                eviction_count++;
+                hit_count++;
+                if(verbose)
+                {
+                     vprint(instruction, 3);
+                }
+            }
+         }
+         else if (instruction == 'L' || instruction =='S')
+         {
+
+                if(hit)
                     {
                         hit_count++;;
                         if(verbose)
                         {
-                            printf("hit \n");
+                            vprint(instruction, 1);
                         }
                     }
                     else if(miss)
@@ -126,7 +127,7 @@ int main(int argc, char * argv[])
                         miss_count++;
                         if(verbose)
                         {
-                            printf("miss \n");
+                            vprint(instruction, 2);
                         }
                     }
                     else
@@ -135,11 +136,10 @@ int main(int argc, char * argv[])
                         eviction_count++;
                         if(verbose)
                         {
-                            printf("miss eviction \n");
+                            vprint(instruction, 3);
                         }
                     }
-                    break;
-        }
+         }
 
     }
 	
@@ -233,4 +233,42 @@ int digitNum(unsigned long number)
         char testString[20];
         sprintf(testString, "%lu", number);
         return strlen(testString);
+}
+
+//takes the instruction and hme (either 1, 2, or 3 and prints what the verbose should be
+//hit = 1
+//miss = 2
+//eviction = 3
+void vprint(char instr, int hme)
+{
+		if(instr == 'M')
+		{
+			if(hme == 1)
+			{
+				printf("hit \n");
+			}
+			else if (hme == 2)
+			{
+				printf("miss hit \n");
+			}
+			else
+			{
+				printf("miss eviction hit \n");
+			}
+		}
+		else if(instr == 'L' || instr == 'S')
+		{
+			if(hme == 1)
+			{
+				printf("hit \n");
+			}
+			else if (hme == 2)
+			{
+				printf("miss \n");
+			}
+			else
+			{
+				printf("miss eviction \n");
+			}
+		}
 }

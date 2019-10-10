@@ -48,9 +48,6 @@ int main(int argc, char * argv[])
       	
 	if (verbose) {exit(0);}
     
-    // allocates memory for tags
-    *tags = (unsigned long int*)malloc(cache.sets * cache.associativity * sizeof(unsigned long int));
-    
     
 
     while(fgets(line, 80, trace) != NULL)
@@ -228,5 +225,6 @@ void printHelp(){
 int digitNum(unsigned long number)
 {
         char testString[20];
-        return strlen(sprintf(testString, "%lu", number));
+        sprintf(testString, "%lu", number);
+        return strlen(testString);
 }

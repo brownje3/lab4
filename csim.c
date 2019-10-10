@@ -49,7 +49,7 @@ int main(int argc, char * argv[])
 
     while(fgets(line, 80, trace) != NULL)
     {
-        sscanf(line, " %c %lu,%d", &instruction, &address, &size);
+        sscanf(line, " %c %8lu,%d", &instruction, &address, &size);
         
         if (verbose) {
             printf("%c %lu,%d ", instruction, address, size);
@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
         hit = miss = evic = 0;
 
 
-        //need to find a way to set the boolean values
+        //need to find a way to set tag
 
 
         //switch that handles the various counts

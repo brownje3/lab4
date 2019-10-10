@@ -45,27 +45,22 @@ int main(int argc, char * argv[])
         printf("No file found");
         exit(0);
     }
-      	
-	if (verbose) {exit(0);}
-    
     
 
     while(fgets(line, 80, trace) != NULL)
     {
-        sscanf(line, "%c %lu %d", &instruction, &address, &size);
+        sscanf(line, " %c %lu %d", &instruction, &address, &size);
         
+        printf("%lu\n", address);
+
         //checks for errors in the instruction
-        if(instruction != 'I' || instruction != 'M' 
-            || instruction != 'L' || instruction != 'S')
+        if(!strcmp(&instruction, "I") || !strcmp(&instruction, "M") 
+            || !strcmp(&instruction, "L") || !strcmp(&instruction, "S"))
         {
             printf("Error in instruction");
             exit(0);
         }
-        else if(digitNum(address) != 8)//checks if address is long enough
-        {
-            printf("Error in address");
-            exit(0);
-        }
+        
         //sets the boolean values as 0 at the beginning of each loop
         hit = miss = evic = 0;
 
@@ -169,7 +164,7 @@ bool cline(int argc, char * argv[], char * fn, struct cache_t * cache)
             cap++;
         }
         else if (strncmp(argv[i], "-t", 2) == 0) {
-            fn = argv[i+1];
+            strcpy(fn, argv[i+1]);
             cap++;
         }
     

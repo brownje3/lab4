@@ -49,10 +49,13 @@ int main(int argc, char * argv[])
 
     while(fgets(line, 80, trace) != NULL)
     {
-        sscanf(line, " %c %lu %d", &instruction, &address, &size);
+        sscanf(line, " %c %lu,%d", &instruction, &address, &size);
         
-        printf("%lu\n", address);
+        if (verbose) {
+            printf("%c %lu,%d ", instruction, address, size);
+        }
 
+        
         //checks for errors in the instruction
         if(!strcmp(&instruction, "I") || !strcmp(&instruction, "M") 
             || !strcmp(&instruction, "L") || !strcmp(&instruction, "S"))

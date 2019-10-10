@@ -8,6 +8,7 @@
  * on a 1KB direct mapped cache with a block size of 32 bytes.
  */ 
 #include <stdio.h>
+#include <stdbool.h>
 #include "cachelab.h"
 
 bool checkBounds(int start, int size, int steps);
@@ -39,13 +40,13 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N])
             iter = 16;
         }
 
-        for(int i = 0; i < M; i = i += iter)//row for loop
+        for(int i = 0; i < M; i += iter)//row for loop
         {
             for(int j = 0; j < M; j += iter)//col for loop
              {
-                for(int k = i; k < i += iter; k++)//block length
+                for(int k = i; k < M; k++)//block length
                 {
-                    for(int p = j; p < j += iter; p++)//block width
+                    for(int p = j; p < M; p++)//block width
                     {
                         if(k == p)//checks to see if the element is on the diagonal; places A[k][k] into temp for later and dc as a reference for when i and j are the same
                         {
@@ -68,15 +69,15 @@ void transpose_submit(int M, int N, int A[N][M], int B[M][N])
     else
     {
         iter = 8;//arbitrary number, may change later
-        for(int i = 0; i < M; i += iterRow)//row for loop
+        for(int i = 0; i < M; i += iter)//row for loop
         {
-            for(int j = 0; j < N; j += iterCol)//col for loop
+            for(int j = 0; j < N; j += iter)//col for loop
             {
                  int k = i;//sets k
                  int p = j;//sets p
-                 while(checkBounds(k, N, iterRow))//checks if k is within bounds of the block and array
+                 while(checkBounds(k, N, iter))//checks if k is within bounds of the block and array
                  {
-                     while(checkBounds(p, M, iterCol))//checks if p is within bounds of the block and array
+                     while(checkBounds(p, M, iter))//checks if p is within bounds of the block and array
                      {
                          if(k == p)//functions the same as earlier, checks for the diagonal
                          {

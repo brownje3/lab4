@@ -23,7 +23,7 @@ int main(int argc, char * argv[])
     bool verbose = false;
     char line[80];
     char instruction;
-    int size;
+    int size;//, setNum, associativity;
     unsigned long address;
     char filename[80]; //added an address to be read
     int hit_count, miss_count, eviction_count;
@@ -67,9 +67,17 @@ int main(int argc, char * argv[])
         //sets the boolean values as 0 at the beginning of each loop
         hit = miss = evic = 0;
 
-
         //need to find a way to set tag
 
+        //gets the tag from the address
+        //int tagLimit = 64 - (cache.setIndexBits - cache.blockBits);
+        //unsigned long tag = getBits(0, tagLimit, address);
+        
+        //places the tag into the cache
+        //cache.tag[setNum][associativity -1] = tag;
+       
+        //update the LRU here
+        //still need to update the booleans for the switch
 
         //switch that handles the various counts
         switch(instruction)
